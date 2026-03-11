@@ -1,0 +1,43 @@
+services:
+  app:
+    image: ghcr.io/${{ github.actor }}/laravel-php:latest
+    container_name: laravel_app
+    restart: unless-stopped
+    env_file: .env
+    volumes:
+      - laravel_storage:/var/www/storage
+      - laravel_public:/var/www/public
+    networks:
+      - laravel_network
+    depends_on:
+      - redis
+
+  nginx:
+    image: ghcr.io/${{ github.actor }}/laravel-nginx:latest
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - laravel_storage:/var/www/storage:ro
+      - laravel_public:/var/www/public:ro
+    networks:
+      - laravel_network
+    depends_on:
+      - app
+
+  redis:
+    image: redis:alpine
+    restart: unless-stopped
+    networks:
+      - laravel_network
+    volumes:
+      - redis_data:/data
+
+networks:
+  laravel_network:
+
+volumes:
+  laravel_storage:
+  laravel_public:
+  redis_data:
