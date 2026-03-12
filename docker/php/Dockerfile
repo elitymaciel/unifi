@@ -2,7 +2,7 @@ FROM node:22-alpine AS node-builder
 WORKDIR /var/www
 COPY package*.json ./
 RUN npm ci
-COPY vite.config.ts tsconfig.json ./
+COPY vite.config.js ./
 COPY resources resources
 COPY public public
 RUN npm run build
