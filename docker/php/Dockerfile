@@ -31,9 +31,23 @@ COPY docker/supervisord.conf /etc/supervisord.conf
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/php/www.conf /usr/local/etc/php-fpm.d/www.conf
 
-RUN mkdir -p storage/framework/{cache,sessions,views} storage/app/public public/storage bootstrap/cache storage/logs /var/log/supervisor
-RUN chown -R appuser:appuser storage bootstrap/cache public storage/logs /var/log/supervisor /var/run/php
+RUN mkdir -p storage/framework/{cache,sessions,views} \
+    storage/app/public \
+    public/storage \
+    bootstrap/cache \
+    storage/logs \
+    /var/log/supervisor
 
+# Chown apenas nas pastas que o appuser precisa escrever (evite /var/run/php e public inteiro se possível)
+RUN chown -R appuser:appuser \
+    storage \
+    bootstrap/cache \
+    /var/log/supervisor
+
+# Se precisar chown em public/storage (link simbólico comum no Laravel)
+RUN chown -R appuser:appuser public/storage
+
+# Mude para non-root user
 USER appuser
 EXPOSE 9000
 CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
