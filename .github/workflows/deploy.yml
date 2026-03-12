@@ -1,5 +1,9 @@
 name: Build and Deploy Docker
 
+permissions:          # ← ADICIONE ESSA SEÇÃO NO TOPO DO ARQUIVO
+  contents: read      # Permite checkout/fetch do repo
+  packages: write     # Já tem pro GHCR push, mas mantenha
+ 
 on:
   push:
     branches: [ main ]
