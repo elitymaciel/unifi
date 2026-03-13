@@ -3,7 +3,7 @@ name: Build and Deploy Docker
 permissions:          # ← ADICIONE ESSA SEÇÃO NO TOPO DO ARQUIVO
   contents: read      # Permite checkout/fetch do repo
   packages: write     # Já tem pro GHCR push, mas mantenha
- 
+
 on:
   push:
     branches: [ main ]
@@ -52,13 +52,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: webfactory/ssh-agent@v0.9.1
+      - uses: appleboy/scp-action@v0.1.7
+        with:
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: "docker-compose.production.yml"
+          target: "~/laravel/"
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+      - uses: appleboy/ssh-action@v0.1.7
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
+          port: 22
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          script: |
+            echo "${{ secrets.ENV_FILE }}" > .env
+            mv .env ~/laravel/.env
+            cd ~/laravel && chmod +x deploy.sh && ./deploy.sh
       - name: Deploy
         run: |
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
-          ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo 'Test OK'"
           git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
           echo "${{ secrets.ENV_FILE }}" > .env
           scp -P 22 docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
