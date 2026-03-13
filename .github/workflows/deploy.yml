@@ -57,6 +57,8 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_KEY }}
       - name: Deploy
         run: |
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
+          ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo 'Test OK'"
           echo "${{ secrets.ENV_FILE }}" > .env
           scp -P 22 docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
           scp -P 22 .env ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
