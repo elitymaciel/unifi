@@ -62,7 +62,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
       - uses: appleboy/ssh-action@v0.1.7
         with:
-          ssh-private-key: ${{ secrets.SSH_KEY }}
+          key: ${{ secrets.SSH_KEY }}
           port: 22
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
