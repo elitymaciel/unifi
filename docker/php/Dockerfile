@@ -1,4 +1,4 @@
-FROM node:22-alpine AS node-builder
+FROM node:22-alpine AS frontend-builder
 WORKDIR /var/www
 COPY package*.json ./
 RUN npm ci
@@ -24,7 +24,7 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
 
 COPY . .
-COPY --from=node-builder /var/www/public/build /var/www/public/build
+COPY --from=frontend-builder /var/www/public/build /var/www/public/build
 
 # Configurações
 COPY docker/supervisord.conf /etc/supervisord.conf
