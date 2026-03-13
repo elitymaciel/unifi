@@ -25,7 +25,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
       - name: Build & Push PHP
         uses: docker/build-push-action@v5
@@ -55,13 +55,11 @@ jobs:
       - uses: webfactory/ssh-agent@v0.9.1
         with:
           ssh-private-key: ${{ secrets.SSH_KEY }}
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          port: 22
       - name: Deploy
         run: |
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null \
           ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "echo 'Test OK'"
+          git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
           echo "${{ secrets.ENV_FILE }}" > .env
           scp -P 22 docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
           scp -P 22 .env ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
