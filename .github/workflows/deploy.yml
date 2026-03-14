@@ -67,10 +67,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           script: |
-            mkdir -p ~/laravel
-      - name: Deploy
-        run: |
-          echo "${{ secrets.ENV_FILE }}" > .env
-          scp -P 22 docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
-          scp -P 22 .env ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
-          ssh -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "chmod +x ~/laravel/deploy.sh && ~/laravel/deploy.sh"
+            mkdir -p ~/laravel && cd ~/laravel
+            rm -f docker-compose.yaml docker-compose.yml
+            echo '${{ secrets.ENV_FILE }}' > ~/laravel/.env
+            git pull origin main || echo "Sem git pull necessário"
+            chmod +x ~/laravel/deploy.sh && ~/laravel/deploy.sh
