@@ -55,12 +55,11 @@ jobs:
       - uses: appleboy/scp-action@v0.1.7
         with:
           key: ${{ secrets.SSH_KEY }}
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
           port: 22
           source: "docker-compose.production.yml"
           target: "~/laravel/"
-          strip_components: 0
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
       - uses: appleboy/ssh-action@v0.1.7
         with:
           key: ${{ secrets.SSH_KEY }}
