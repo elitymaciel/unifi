@@ -36,7 +36,6 @@ services:
 
 networks:
   laravel_network:
-    external: true
 
 volumes:
   laravel_storage:
