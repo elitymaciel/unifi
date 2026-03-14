@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/${{GITHUB_USERNAME}}/laravel-php:latest
+    image: ghcr.io/${{USERNAME}}/laravel-php:latest
     container_name: laravel_app
     restart: unless-stopped
     env_file: .env
@@ -13,7 +13,7 @@ services:
       - redis
 
   nginx:
-    image: ghcr.io/${GITHUB_USERNAME}/laravel-nginx:latest
+    image: ghcr.io/${USERNAME}/laravel-nginx:latest
     container_name: laravel_nginx
     restart: unless-stopped
     ports:
