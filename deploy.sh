@@ -5,11 +5,11 @@ echo "🚀 Iniciando deploy do Laravel..."
 
 cd ~/laravel
 
-docker system prune -f   # remove caches antigos
-sync; echo 3 > /proc/sys/vm/drop_caches
+docker system prune -a -f
+docker builder prune -f
 
-# Docker parte
-docker compose -f docker-compose.production.yml down --remove-orphans
+# Docker parte --remove-orphans --volumes
+docker compose -f docker-compose.production.yml down --remove-orphans --volumes
 docker compose -f docker-compose.production.yml pull
 docker compose -f docker-compose.production.yml up -d --build  # --build só se tiver build local
 
