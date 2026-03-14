@@ -5,6 +5,8 @@ echo "🚀 Iniciando deploy do Laravel..."
 
 cd ~/laravel
 
+docker system prune -f   # remove caches antigos
+sync; echo 3 > /proc/sys/vm/drop_caches
 
 # Docker parte
 docker compose -f docker-compose.production.yml down --remove-orphans
