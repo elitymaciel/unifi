@@ -18,7 +18,7 @@ docker compose -f docker-compose.production.yml exec app php artisan config:cach
 docker compose -f docker-compose.production.yml exec app php artisan route:cache
 docker compose -f docker-compose.production.yml exec app php artisan view:cache
 docker compose -f docker-compose.production.yml exec app php artisan optimize
-
+sleep 10
 # Opcional: restart queue workers se usar Horizon/Queue
 # php artisan queue:restart
 

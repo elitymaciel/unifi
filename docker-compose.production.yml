@@ -36,6 +36,11 @@ services:
 
 networks:
   laravel_network:
+    external: true
+  minha_rede:
+    external: true
+  npm_public:
+    external: true
 
 volumes:
   laravel_storage:
