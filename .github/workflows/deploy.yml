@@ -67,8 +67,9 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           script: |
-            mkdir -p ~/laravel && cd ~/laravel
+            cd ~/laravel
+            git reset --hard
+            git pull origin main
             rm -f docker-compose.yaml docker-compose.yml
             echo '${{ secrets.ENV_FILE }}' > ~/laravel/.env
-            git pull origin main || echo "Sem git pull necessário"
             chmod +x ~/laravel/deploy.sh && ~/laravel/deploy.sh

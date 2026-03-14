@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e  # para no primeiro erro
 
-echo "🚀 Iniciando deploy da Laravel..."
+echo "🚀 Iniciando deploy do Laravel..."
 
 cd ~/laravel
 
