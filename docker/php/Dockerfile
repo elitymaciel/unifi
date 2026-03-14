@@ -48,7 +48,7 @@ RUN chown -R appuser:appuser \
 # Se precisar chown em public/storage (link simbólico comum no Laravel)
 RUN chown -R appuser:appuser public/storage
 
-# Mude para non-root user
-USER appuser
+# Mude para non-root user (removido para o PHP-FPM master rodar como root e gerenciar PIDs)
+# USER appuser
 EXPOSE 9000
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf", "[php-fpm]" ]
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
