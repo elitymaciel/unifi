@@ -55,11 +55,12 @@ jobs:
       - uses: appleboy/scp-action@v0.1.7
         with:
           key: ${{ secrets.SSH_KEY }}
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
           port: 22
           source: "docker-compose.production.yml"
           target: "~/laravel/"
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
+          strip_components: 0
       - uses: appleboy/ssh-action@v0.1.7
         with:
           key: ${{ secrets.SSH_KEY }}
@@ -67,13 +68,11 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           script: |
-            echo "${{ secrets.ENV_FILE }}" > .env
-            mv .env ~/laravel/.env
-            cd ~/laravel && chmod +x deploy.sh && ./deploy.sh
+            mkdir -p ~/laravel
       - name: Deploy
         run: |
           git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
           echo "${{ secrets.ENV_FILE }}" > .env
           scp -P 22 docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
           scp -P 22 .env ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
-          ssh -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/laravel && chmod +x deploy.sh && ./deploy.sh"
+          ssh -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "chmod +x ~/laravel/deploy.sh && ~/laravel/deploy.sh"
