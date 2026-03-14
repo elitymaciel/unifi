@@ -22,6 +22,11 @@ WORKDIR /var/www
 
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-interaction --prefer-dist --no-scripts
+RUN php artisan migrate --force
+RUN php artisan config:cache
+RUN php artisan route:cache
+RUN php artisan view:cache
+RUN php artisan optimize
 
 COPY . .
 COPY --from=frontend-builder /var/www/public/build /var/www/public/build

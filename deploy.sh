@@ -5,18 +5,6 @@ echo "🚀 Iniciando deploy do Laravel..."
 
 cd ~/laravel
 
-# Atualiza código se estiver usando git no servidor (opcional)
-# git pull origin main
-
-# Instala dependências (se não buildar imagem no CI)
-composer install --no-dev --optimize-autoloader
-
-# Migrações e cache (com --force em prod)
-php artisan migrate --force
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
-php artisan optimize
 
 # Docker parte
 docker compose -f docker-compose.production.yml down --remove-orphans
