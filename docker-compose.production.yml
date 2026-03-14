@@ -23,8 +23,6 @@ services:
       - laravel_public:/var/www/public:ro
     networks:
       - laravel_network
-      - minha_rede
-      - npm_public
     depends_on:
       - app
 
@@ -38,9 +36,6 @@ services:
 
 networks:
   laravel_network:
-  minha_rede:
-    external: true
-  npm_public:
     external: true
 
 volumes:
