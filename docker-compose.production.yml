@@ -23,6 +23,8 @@ services:
       - laravel_public:/var/www/public:ro
     networks:
       - laravel_network
+      - minha_rede
+      - npm_public
     depends_on:
       - app
 
