@@ -51,4 +51,4 @@ RUN chown -R appuser:appuser public/storage
 # Mude para non-root user
 USER appuser
 EXPOSE 9000
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
+CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf", "[php-fpm]" ]
