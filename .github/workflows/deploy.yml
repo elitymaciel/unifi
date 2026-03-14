@@ -52,38 +52,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      # Copia apenas os arquivos necessários pro servidor
-      - name: Copiar arquivos de deploy via SCP
-        uses: appleboy/scp-action@v0.1.7
+      - uses: appleboy/scp-action@v0.1.7
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           port: 22
-          source: |
-            docker-compose.production.yml
-            deploy.sh   # se o deploy.sh não estiver já no servidor ou se você atualiza ele
+          source: "docker-compose.production.yml"
           target: "~/laravel/"
-          strip_components: 0  # opcional, mantém a estrutura
-
-      # Executa o deploy via SSH
-      - name: Deploy na Laravel
-        uses: appleboy/ssh-action@v0.1.7
-        with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
+      - uses: appleboy/ssh-action@v0.1.7
+        with:
           key: ${{ secrets.SSH_KEY }}
           port: 22
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
           script: |
-            # Cria ou atualiza o .env (melhor forma: echo multi-linha)
-            echo '${{ secrets.ENV_FILE }}' > ~/laravel/.env
-
-            cd ~/laravel
-
-            # Opcional: git pull se o código Laravel estiver no servidor via git
-            # git pull origin main || echo "Sem git pull necessário"
-
-            # Torna executável e roda o script
-            chmod +x deploy.sh
-            ./deploy.sh
+            echo "${{ secrets.ENV_FILE }}" > .env
+            mv .env ~/laravel/.env
+            cd ~/laravel && chmod +x deploy.sh && ./deploy.sh
+      - name: Deploy
+        run: |
+          git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
+          echo "${{ secrets.ENV_FILE }}" > .env
+          scp -P 22 docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
+          scp -P 22 .env ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
+          ssh -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ~/laravel && chmod +x deploy.sh && ./deploy.sh"
