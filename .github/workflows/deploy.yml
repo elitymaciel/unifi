@@ -70,7 +70,6 @@ jobs:
             mkdir -p ~/laravel
       - name: Deploy
         run: |
-          git config --global url."https://${{ secrets.PERSONAL_GITHUB_TOKEN }}:@github.com".insteadOf "https://github.com"
           echo "${{ secrets.ENV_FILE }}" > .env
           scp -P 22 docker-compose.production.yml ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
           scp -P 22 .env ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/laravel/
