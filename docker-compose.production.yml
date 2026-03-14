@@ -6,7 +6,6 @@ services:
     env_file: .env
     volumes:
       - laravel_storage:/var/www/storage
-      - laravel_public:/var/www/public
     networks:
       - laravel_network
     depends_on:
@@ -20,7 +19,6 @@ services:
       - "8888:80"
     volumes:
       - laravel_storage:/var/www/storage:ro
-      - laravel_public:/var/www/public:ro
     networks:
       - laravel_network
     depends_on:
@@ -39,5 +37,4 @@ networks:
 
 volumes:
   laravel_storage:
-  laravel_public:
   redis_data:
