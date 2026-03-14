@@ -39,10 +39,11 @@ RUN mkdir -p storage/framework/{cache,sessions,views} \
     storage/logs \
     /var/log/supervisor
 
-# Chown apenas nas pastas que o appuser precisa escrever (evite /var/run/php e public inteiro se possível)
+# Chown apenas nas pastas que o appuser precisa escrever
 RUN chown -R appuser:appuser \
     storage \
     bootstrap/cache \
+    database \
     /var/log/supervisor
 
 # Se precisar chown em public/storage (link simbólico comum no Laravel)
