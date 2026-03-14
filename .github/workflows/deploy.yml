@@ -48,42 +48,42 @@ jobs:
           pull: true
 
   deploy:
-  needs: build  # assumindo que você tem um job build antes
-  runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v4
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-    # Copia apenas os arquivos necessários pro servidor
-    - name: Copiar arquivos de deploy via SCP
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        port: 22
-        source: |
-          docker-compose.production.yml
-          deploy.sh   # se o deploy.sh não estiver já no servidor ou se você atualiza ele
-        target: "~/laravel/"
-        strip_components: 0  # opcional, mantém a estrutura
+      # Copia apenas os arquivos necessários pro servidor
+      - name: Copiar arquivos de deploy via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          source: |
+            docker-compose.production.yml
+            deploy.sh   # se o deploy.sh não estiver já no servidor ou se você atualiza ele
+          target: "~/laravel/"
+          strip_components: 0  # opcional, mantém a estrutura
 
-    # Executa o deploy via SSH
-    - name: Deploy na Laravel
-      uses: appleboy/ssh-action@v0.1.7
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USER }}
-        key: ${{ secrets.SSH_KEY }}
-        port: 22
-        script: |
-          # Cria ou atualiza o .env (melhor forma: echo multi-linha)
-          echo '${{ secrets.ENV_FILE }}' > ~/laravel/.env
+      # Executa o deploy via SSH
+      - name: Deploy na Laravel
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            # Cria ou atualiza o .env (melhor forma: echo multi-linha)
+            echo '${{ secrets.ENV_FILE }}' > ~/laravel/.env
 
-          cd ~/laravel
+            cd ~/laravel
 
-          # Opcional: git pull se o código Laravel estiver no servidor via git
-          # git pull origin main || echo "Sem git pull necessário"
+            # Opcional: git pull se o código Laravel estiver no servidor via git
+            # git pull origin main || echo "Sem git pull necessário"
 
-          # Torna executável e roda o script
-          chmod +x deploy.sh
-          ./deploy.sh
+            # Torna executável e roda o script
+            chmod +x deploy.sh
+            ./deploy.sh
