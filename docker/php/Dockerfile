@@ -2,7 +2,7 @@ FROM node:22-alpine AS frontend-builder
 WORKDIR /var/www
 COPY package*.json ./
 RUN npm ci
-COPY vite.config.js ./
+COPY vite.config.js postcss.config.js tailwind.config.js ./
 COPY resources resources
 COPY public public
 RUN npm run build
