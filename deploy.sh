@@ -9,7 +9,7 @@ docker system prune -a -f
 docker builder prune -f
 
 # Derruba tudo e remove volumes para deploy limpo
-docker compose -f docker-compose.production.yml down --remove-orphans --volumes
+docker compose -f docker-compose.production.yml down --remove-orphans
 
 # Baixa as imagens mais recentes do GHCR
 docker compose -f docker-compose.production.yml pull
