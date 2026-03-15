@@ -8,10 +8,10 @@ services:
       - laravel_storage:/var/www/storage
       - laravel_database:/var/www/database
     networks:
-      - laravel_network
-      - laravel_bridge
+      - laravel_network 
     depends_on:
       - redis
+      - db
 
   nginx:
     image: ghcr.io/elitymaciel/laravel-nginx:latest
@@ -33,13 +33,26 @@ services:
       - laravel_network
     volumes:
       - redis_data:/data
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: laravel_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DB_DATABASE:-laravel_unifi}
+      POSTGRES_USER: ${DB_USERNAME:-laravel_user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-laravel_pass}
+    volumes:
+      - postgres_laravel_data:/var/lib/postgresql/data
+    networks:
+      - laravel_network 
 
 networks:
-  laravel_network:
-  laravel_bridge:
-    name: laravel_bridge
+  laravel_network: 
 
 volumes:
   laravel_storage:
   laravel_database:
   redis_data:
+  postgres_laravel_data:
