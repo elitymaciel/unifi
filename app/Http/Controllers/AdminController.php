@@ -65,6 +65,23 @@ class AdminController extends Controller
         return back()->with('success', 'Nível de acesso atualizado.');
     }
 
+    public function updateUser(\App\Http\Requests\Admin\UpdateUserRequest $request, User $user)
+    {
+        $data = [
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role,
+        ];
+
+        if ($request->filled('password')) {
+            $data['password'] = Hash::make($request->password);
+        }
+
+        $user->update($data);
+
+        return back()->with('success', 'Usuário atualizado com sucesso.');
+    }
+
     public function destroy(User $user)
     {
         if (auth()->id() === $user->id) {
