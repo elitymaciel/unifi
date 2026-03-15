@@ -3,10 +3,17 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UniFiController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SetupController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/setup', [SetupController::class, 'index'])->name('setup.index');
+Route::post('/setup', [SetupController::class, 'store'])->name('setup.store');
+
 Route::get('/', function () {
-    return view('welcome');
+    if (\App\Models\User::count() === 0) {
+        return redirect()->route('setup.index');
+    }
+    return redirect()->route('login');
 });
 
 Route::get('/dashboard', [UniFiController::class, 'dashboard'])
@@ -24,6 +31,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/users/sites', [AdminController::class, 'toggleSitePermission'])->name('users.sites');
     Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
     Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
+
+    Route::get('/hotspot', [\App\Http\Controllers\HotspotController::class, 'index'])->name('hotspot.index');
+    Route::post('/hotspot/users', [\App\Http\Controllers\HotspotController::class, 'store'])->name('hotspot.users.store');
 
     Route::get('/mikrotiks', [\App\Http\Controllers\Admin\MikroTikController::class, 'index'])->name('mikrotiks.index');
     Route::post('/mikrotiks', [\App\Http\Controllers\Admin\MikroTikController::class, 'store'])->name('mikrotiks.store');
@@ -44,9 +54,6 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/wifi/{wlan_id}/mac-filters', [UniFiController::class, 'indexMacFilters'])->name('unifi.wifi.mac-filters');
     Route::post('/wifi/mac-filters/remove', [UniFiController::class, 'removeMacFilter'])->name('unifi.wifi.mac-filters.remove');
-
-    Route::get('/hotspot', [\App\Http\Controllers\HotspotController::class, 'index'])->name('hotspot.index');
-    Route::post('/hotspot/users', [\App\Http\Controllers\HotspotController::class, 'store'])->name('hotspot.users.store');
 });
 
 require __DIR__.'/auth.php';

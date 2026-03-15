@@ -29,8 +29,9 @@
             </div>
             
             <div class="relative z-10 flex flex-col justify-center px-16 lg:px-24 w-full h-full text-white">
+                <!-- Logo mock
                 <div class="mb-12">
-                    <!-- Logo mock -->
+                     
                     <div class="flex items-center gap-3">
                         <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/30">
                             <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -39,7 +40,7 @@
                         </div>
                         <span class="text-2xl font-bold tracking-tight">Tech Solutions</span>
                     </div>
-                </div>
+                </div> -->
                 
                 
                 <!-- Small testimonial/quote -->
@@ -47,7 +48,7 @@
                     <div class="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-md max-w-lg transition-all hover:bg-white/10">
                         <div class="flex items-center gap-4 mb-2">
                              <div class="text-sm">
-                                <div class="font-semibold text-white">Criado by</div>
+                                <div class="font-semibold text-white">Created by</div>
                                 <div class="text-slate-400">Maciel Oliveira</div>
                             </div>
                         </div>
@@ -141,7 +142,7 @@
                         @enderror
                     </div>
 
-                    <!-- Options -->
+                    <!-- Options 
                     <div class="flex items-center justify-between pt-1">
                         <div class="flex items-center">
                             <input id="remember" name="remember" type="checkbox"
@@ -158,7 +159,7 @@
                                 </a>
                             </div>
                         @endif
-                    </div>
+                    </div>-->
 
                     <!-- Submit Button -->
                     <div class="pt-2">

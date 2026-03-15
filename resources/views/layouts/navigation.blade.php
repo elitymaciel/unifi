@@ -18,9 +18,11 @@
                     <x-nav-link :href="route('unifi.networks')" :active="request()->routeIs('unifi.networks')">
                         {{ __('Redes') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('hotspot.index')" :active="request()->routeIs('hotspot.index')">
-                        {{ __('Hotspot') }}
-                    </x-nav-link>
+                    @if(auth()->user()->isAdmin())
+                        <x-nav-link :href="route('admin.hotspot.index')" :active="request()->routeIs('admin.hotspot.index')">
+                            {{ __('Hotspot') }}
+                        </x-nav-link>
+                    @endif
                     @if(auth()->user()->isAdmin())
                         <x-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                             {{ __('Administração') }}
@@ -84,9 +86,11 @@
             <x-responsive-nav-link :href="route('unifi.networks')" :active="request()->routeIs('unifi.networks')">
                 {{ __('Redes') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('hotspot.index')" :active="request()->routeIs('hotspot.index')">
-                {{ __('Hotspot') }}
-            </x-responsive-nav-link>
+            @if(auth()->user()->isAdmin())
+                <x-responsive-nav-link :href="route('admin.hotspot.index')" :active="request()->routeIs('admin.hotspot.index')">
+                    {{ __('Hotspot') }}
+                </x-responsive-nav-link>
+            @endif
             @if(auth()->user()->isAdmin())
                 <x-responsive-nav-link :href="route('admin.users.index')" :active="request()->routeIs('admin.users.*')">
                     {{ __('Administração') }}

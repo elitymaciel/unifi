@@ -14,8 +14,11 @@ class AuthenticatedSessionController extends Controller
     /**
      * Display the login view.
      */
-    public function create(): View
+    public function create(): RedirectResponse|View
     {
+        if (\App\Models\User::count() === 0) {
+            return redirect()->route('setup.index');
+        }
         return view('auth.login');
     }
 
