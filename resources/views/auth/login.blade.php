@@ -76,9 +76,8 @@
                 </div>
 
                 <div class="text-center lg:text-left">
-                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 mb-2">Bem-vindo de volta</h2>
-                    <p class="text-slate-500">Por favor, insira suas credenciais para acessar sua conta.</p>
-                </div>
+                    <h2 class="text-3xl font-bold tracking-tight text-slate-900 mb-2">Bem-vindo</h2>
+                 </div>
 
                 @if (session('status'))
                     <div class="rounded-xl bg-emerald-50 p-4 border border-emerald-100">
