@@ -22,6 +22,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/users/create', [AdminController::class, 'createUser'])->name('users.create');
     Route::post('/users/role', [AdminController::class, 'updateRole'])->name('users.role');
     Route::post('/users/sites', [AdminController::class, 'toggleSitePermission'])->name('users.sites');
+    Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
 
     Route::get('/mikrotiks', [\App\Http\Controllers\Admin\MikroTikController::class, 'index'])->name('mikrotiks.index');
     Route::post('/mikrotiks', [\App\Http\Controllers\Admin\MikroTikController::class, 'store'])->name('mikrotiks.store');

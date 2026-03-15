@@ -64,4 +64,15 @@ class AdminController extends Controller
         
         return back()->with('success', 'Nível de acesso atualizado.');
     }
+
+    public function destroy(User $user)
+    {
+        if (auth()->id() === $user->id) {
+            return back()->with('error', 'Você não pode excluir a sua própria conta.');
+        }
+
+        $user->delete();
+
+        return back()->with('success', 'Usuário excluído com sucesso.');
+    }
 }
