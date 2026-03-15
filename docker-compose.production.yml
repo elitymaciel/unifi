@@ -33,7 +33,6 @@ services:
       - laravel_network
     volumes:
       - redis_data:/data
-    restart: unless-stopped
 
   db:
     image: postgres:16-alpine
