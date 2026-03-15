@@ -9,6 +9,7 @@ services:
       - laravel_database:/var/www/database
     networks:
       - laravel_network
+      - minha_rede
     depends_on:
       - redis
 
@@ -35,6 +36,8 @@ services:
 
 networks:
   laravel_network:
+  minha_rede:
+    external: true
 
 volumes:
   laravel_storage:
