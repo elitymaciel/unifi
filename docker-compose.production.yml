@@ -41,7 +41,7 @@ services:
     environment:
       POSTGRES_DB: ${DB_DATABASE:-laravel_unifi}
       POSTGRES_USER: ${DB_USERNAME:-laravel_user}
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-laravel_pass}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?database password is required}
     volumes:
       - postgres_laravel_data:/var/lib/postgresql/data
     networks:
