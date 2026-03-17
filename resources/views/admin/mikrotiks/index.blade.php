@@ -117,7 +117,7 @@
                                     </svg>
                                 </div>
                                 <h3 class="text-2xl font-black text-white tracking-tight">Novo MikroTik</h3>
-                                <p class="text-indigo-100 text-sm font-medium mt-1">Configure um novo roteador para gestão de Hotspot</p>
+                                <p class="text-indigo-100 text-sm font-medium mt-1">Configure um novo roteador para gestão de Visitantes</p>
                             </div>
                         </div>
 

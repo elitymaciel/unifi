@@ -20,7 +20,7 @@
                     </x-nav-link>
                     @if(auth()->user()->isAdmin())
                         <x-nav-link :href="route('admin.hotspot.index')" :active="request()->routeIs('admin.hotspot.index')">
-                            {{ __('Hotspot') }}
+                            {{ __('Visitantes') }}
                         </x-nav-link>
                     @endif
                     @if(auth()->user()->isAdmin())
@@ -88,7 +88,7 @@
             </x-responsive-nav-link>
             @if(auth()->user()->isAdmin())
                 <x-responsive-nav-link :href="route('admin.hotspot.index')" :active="request()->routeIs('admin.hotspot.index')">
-                    {{ __('Hotspot') }}
+                    {{ __('Visitantes') }}
                 </x-responsive-nav-link>
             @endif
             @if(auth()->user()->isAdmin())

@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-bold text-2xl text-gray-800 leading-tight">
-                Gestão de <span class="text-indigo-600 font-black">Hotspot MikroTik</span>
+                Gestão de <span class="text-indigo-600 font-black">Visitantes MikroTik</span>
             </h2>
         </div>
     </x-slot>
@@ -12,7 +12,7 @@
             
             <div class="flex justify-between items-center mb-8">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-800">Usuários do Hotspot</h3>
+                    <h3 class="text-xl font-bold text-gray-800">Usuários Visitantes</h3>
                     @if(isset($activeMikroTik))
                         <p class="text-sm text-indigo-600 font-bold">Roteador Ativo: {{ $activeMikroTik->name }} ({{ $activeMikroTik->host }})</p>
                     @endif
@@ -94,7 +94,7 @@
                             @empty
                                 <tr>
                                     <td colspan="4" class="px-8 py-10 text-center text-gray-500 font-bold">
-                                        Nenhum usuário de hotspot encontrado.
+                                        Nenhum visitante encontrado.
                                     </td>
                                 </tr>
                             @endforelse
@@ -132,7 +132,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                     </svg>
                                 </div>
-                                <h3 class="text-2xl font-black text-white tracking-tight">Novo Usuário Hotspot</h3>
+                                <h3 class="text-2xl font-black text-white tracking-tight">Novo Visitante</h3>
                                 <p class="text-indigo-100 text-sm font-medium mt-1">Crie credenciais para o roteador <span class="underline">{{ $activeMikroTik->name }}</span></p>
                             </div>
                         </div>
@@ -168,7 +168,7 @@
 
                         <div class="px-8 py-6 bg-slate-50/50 border-t border-gray-100 flex flex-col sm:flex-row-reverse gap-3">
                             <button type="submit" form="create-hotspot-user-form" class="w-full sm:w-auto inline-flex justify-center items-center rounded-2xl border border-transparent px-8 py-3 bg-indigo-600 text-sm font-black text-white hover:bg-indigo-700 hover:shadow-lg active:scale-95 transition-all outline-none">
-                                Criar Usuário
+                                Criar Visitante
                             </button>
                             <button type="button" @click="showCreateModal = false" class="w-full sm:w-auto inline-flex justify-center items-center rounded-2xl border border-gray-200 px-8 py-3 bg-white text-sm font-bold text-slate-600 hover:bg-gray-50 active:scale-95 transition-all outline-none">
                                 Cancelar
