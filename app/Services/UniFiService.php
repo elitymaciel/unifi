@@ -28,13 +28,28 @@ class UniFiService
         return $this->client->login();
     }
 
-    public function getActiveSite()
+    public function getActiveSite($user = null)
     {
         $this->login();
-        $sites = $this->client->list_sites();
+        $allSites = $this->client->list_sites();
+        
+        // Se for um usuário comum, pegamos apenas os sites permitidos para o filtro
+        $sites = $this->list_sites($user);
+        
         $siteId = session('unifi_site_id', config('unifi.site_id'));
         
-        return collect($sites)->firstWhere('name', $siteId);
+        // Verifica se o site atual da sessão é permitido para este usuário
+        $site = collect($sites)->firstWhere('name', $siteId);
+
+        // Se o site atual NÃO for permitido mas o usuário tiver outros sites, pegamos o primeiro permitido
+        if (!$site && count($sites) > 0) {
+            $site = $sites[0];
+            $this->setSite($site->name);
+            // Re-inicializa o cliente com o site correto
+            $this->client->set_site($site->name);
+        }
+        
+        return $site;
     }
 
     public function list_sites($user = null)

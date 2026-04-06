@@ -40,8 +40,8 @@ class UniFiController extends Controller
 
     public function indexWifi()
     {
+        $activeSite = $this->unifi->getActiveSite(auth()->user());
         $wlans = $this->unifi->getWlans(auth()->user());
-        $activeSite = $this->unifi->getActiveSite();
         return view('unifi.wifi', compact('wlans', 'activeSite'));
     }
 
