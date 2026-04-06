@@ -7,6 +7,7 @@ cd ~/laravel
 
 docker system prune -a -f
 docker builder prune -f
+docker image prune -a -f
 
 # Derruba tudo e remove volumes para deploy limpo
 docker compose -f docker-compose.production.yml down --remove-orphans
