@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/elitymaciel/laravel-php:latest
+    image: ghcr.io/elitymaciel/laravel-php:${IMAGE_TAG:-latest}
     container_name: laravel_app
     restart: unless-stopped
     env_file: .env
@@ -14,7 +14,7 @@ services:
       - db
 
   nginx:
-    image: ghcr.io/elitymaciel/laravel-nginx:latest
+    image: ghcr.io/elitymaciel/laravel-nginx:${IMAGE_TAG:-latest}
     container_name: laravel_nginx
     restart: unless-stopped
     ports:
