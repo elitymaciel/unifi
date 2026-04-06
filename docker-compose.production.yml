@@ -1,6 +1,9 @@
 services:
   app:
-    image: ghcr.io/elitymaciel/laravel-php:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    image: unifi-app
     container_name: laravel_app
     restart: unless-stopped
     env_file: .env
@@ -14,7 +17,10 @@ services:
       - db
 
   nginx:
-    image: ghcr.io/elitymaciel/laravel-nginx:${IMAGE_TAG:-latest}
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    image: unifi-nginx
     container_name: laravel_nginx
     restart: unless-stopped
     ports:
