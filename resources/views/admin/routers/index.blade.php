@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-bold text-2xl text-gray-800 leading-tight">
-                Gestão de <span class="text-indigo-600 font-black">MikroTiks</span>
+                Gestão de <span class="text-indigo-600 font-black">Roteadores</span>
             </h2>
         </div>
     </x-slot>
@@ -15,16 +15,16 @@
                 <a href="{{ route('admin.users.index') }}" class="px-6 py-3 rounded-2xl font-bold text-sm transition-all {{ request()->routeIs('admin.users.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-white text-gray-500 hover:bg-gray-100 border border-gray-100' }}">
                     Usuários
                 </a>
-                <a href="{{ route('admin.mikrotiks.index') }}" class="px-6 py-3 rounded-2xl font-bold text-sm transition-all {{ request()->routeIs('admin.mikrotiks.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-white text-gray-500 hover:bg-gray-100 border border-gray-100' }}">
-                    MikroTiks
+                <a href="{{ route('admin.routers.index') }}" class="px-6 py-3 rounded-2xl font-bold text-sm transition-all {{ request()->routeIs('admin.routers.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-white text-gray-500 hover:bg-gray-100 border border-gray-100' }}">
+                    Roteadores
                 </a>
             </div>
             
             <div class="flex justify-between items-center mb-8">
-                <h3 class="text-xl font-bold text-gray-800">Roteadores Cadastrados</h3>
+                <h3 class="text-xl font-bold text-gray-800">Equipamentos Cadastrados</h3>
                 <button @click="showCreateModal = true" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-xl font-bold text-sm text-white uppercase tracking-widest hover:bg-indigo-700 transition shadow-sm">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Adicionar MikroTik
+                    Adicionar Roteador
                 </button>
             </div>
 
@@ -34,7 +34,7 @@
                 </div>
             @endif
 
-            <!-- MikroTiks List -->
+            <!-- Routers List -->
             <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-100">
@@ -47,27 +47,27 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
-                            @forelse($mikrotiks as $m)
+                            @forelse($routers as $r)
                                 <tr class="hover:bg-indigo-50/30 transition-colors">
                                     <td class="px-8 py-5 whitespace-nowrap">
                                         <div class="flex items-center">
                                             <div class="h-10 w-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center font-black text-sm">
-                                                MT
+                                                RT
                                             </div>
                                             <div class="ml-4">
-                                                <div class="text-sm font-bold text-gray-900">{{ $m->name }}</div>
-                                                <div class="text-xs text-gray-500">{{ $m->username }}</div>
+                                                <div class="text-sm font-bold text-gray-900">{{ $r->name }}</div>
+                                                <div class="text-xs text-gray-500">{{ $r->username }}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-8 py-5 whitespace-nowrap">
-                                        <code class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-black text-slate-600 tracking-tighter">{{ $m->host }}</code>
+                                        <code class="px-3 py-1 bg-slate-100 rounded-lg text-xs font-black text-slate-600 tracking-tighter">{{ $r->host }}</code>
                                     </td>
                                     <td class="px-8 py-5 whitespace-nowrap text-sm text-gray-500 font-bold">
-                                        {{ $m->port }}
+                                        {{ $r->port }}
                                     </td>
                                     <td class="px-8 py-5 whitespace-nowrap text-right">
-                                        <form action="{{ route('admin.mikrotiks.destroy', $m) }}" method="POST" onsubmit="return confirm('Remover este MikroTik?')">
+                                        <form action="{{ route('admin.routers.destroy', $r) }}" method="POST" onsubmit="return confirm('Remover este roteador?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="inline-flex items-center px-4 py-2 text-xs font-black rounded-xl text-red-600 bg-red-50 hover:bg-red-100 uppercase tracking-widest transition-all active:scale-95">
@@ -80,7 +80,7 @@
                             @empty
                                 <tr>
                                     <td colspan="4" class="px-8 py-10 text-center text-gray-500 font-bold">
-                                        Nenhum MikroTik cadastrado.
+                                        Nenhum roteador cadastrado.
                                     </td>
                                 </tr>
                             @endforelse
@@ -116,13 +116,13 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2z" />
                                     </svg>
                                 </div>
-                                <h3 class="text-2xl font-black text-white tracking-tight">Novo MikroTik</h3>
-                                <p class="text-indigo-100 text-sm font-medium mt-1">Configure um novo roteador para gestão de Visitantes</p>
+                                <h3 class="text-2xl font-black text-white tracking-tight">Novo Roteador</h3>
+                                <p class="text-indigo-100 text-sm font-medium mt-1">Configure um novo roteador para gestão de Hotspot</p>
                             </div>
                         </div>
 
                         <div class="px-8 py-8">
-                            <form id="create-mikrotik-form" action="{{ route('admin.mikrotiks.store') }}" method="POST" class="space-y-6">
+                            <form id="create-mikrotik-form" action="{{ route('admin.routers.store') }}" method="POST" class="space-y-6">
                                 @csrf
                                 <div>
                                     <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Nome da Unidade / Descrição</label>
@@ -153,7 +153,7 @@
 
                         <div class="px-8 py-6 bg-slate-50/50 border-t border-gray-100 flex flex-col sm:flex-row-reverse gap-3">
                             <button type="submit" form="create-mikrotik-form" class="w-full sm:w-auto inline-flex justify-center items-center rounded-2xl border border-transparent px-8 py-3 bg-indigo-600 text-sm font-black text-white hover:bg-indigo-700 hover:shadow-lg active:scale-95 transition-all outline-none">
-                                Salvar MikroTik
+                                Salvar Roteador
                             </button>
                             <button type="button" @click="showCreateModal = false" class="w-full sm:w-auto inline-flex justify-center items-center rounded-2xl border border-gray-200 px-8 py-3 bg-white text-sm font-bold text-slate-600 hover:bg-gray-50 active:scale-95 transition-all outline-none">
                                 Cancelar

@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\SitePermission;
+use App\Models\Router;
+use App\Models\RouterPermission;
 use App\Services\UniFiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -19,10 +21,12 @@ class AdminController extends Controller
 
     public function index()
     {
-        $users = User::with('sitePermissions')->get();
+        $users = User::with(['sitePermissions', 'routerPermissions', 'wifiPermissions'])->get();
         $allSites = $this->unifi->list_sites();
+        $allRouters = Router::all();
+        $allWlansPerSite = $this->unifi->listAllWlansPerSite();
         
-        return view('admin.users.index', compact('users', 'allSites'));
+        return view('admin.users.index', compact('users', 'allSites', 'allRouters', 'allWlansPerSite'));
     }
 
     public function createUser(\App\Http\Requests\Admin\StoreUserRequest $request)
@@ -44,6 +48,11 @@ class AdminController extends Controller
             ->first();
 
         if ($permission) {
+            // Also delete any WiFi permissions for this site if the site is removed
+            \App\Models\WifiPermission::where('user_id', $request->user_id)
+                ->where('site_name', $request->site_name)
+                ->delete();
+
             $permission->delete();
             $status = 'removida';
         } else {
@@ -55,6 +64,59 @@ class AdminController extends Controller
         }
 
         return back()->with('success', "Permissão para o site {$status} com sucesso.");
+    }
+
+    public function toggleRouterPermission(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'router_id' => 'required|exists:routers,id',
+        ]);
+
+        $permission = RouterPermission::where('user_id', $request->user_id)
+            ->where('router_id', $request->router_id)
+            ->first();
+
+        if ($permission) {
+            $permission->delete();
+            $status = 'removida';
+        } else {
+            RouterPermission::create([
+                'user_id' => $request->user_id,
+                'router_id' => $request->router_id,
+            ]);
+            $status = 'concedida';
+        }
+
+        return back()->with('success', "Permissão para o roteador {$status} com sucesso.");
+    }
+
+    public function toggleWifiPermission(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'site_name' => 'required|string',
+            'wlan_id' => 'required|string',
+        ]);
+
+        $permission = \App\Models\WifiPermission::where('user_id', $request->user_id)
+            ->where('site_name', $request->site_name)
+            ->where('wlan_id', $request->wlan_id)
+            ->first();
+
+        if ($permission) {
+            $permission->delete();
+            $status = 'removida';
+        } else {
+            \App\Models\WifiPermission::create([
+                'user_id' => $request->user_id,
+                'site_name' => $request->site_name,
+                'wlan_id' => $request->wlan_id,
+            ]);
+            $status = 'concedida';
+        }
+
+        return back()->with('success', "Permissão para a rede WiFi {$status} com sucesso.");
     }
     
     public function updateRole(\App\Http\Requests\Admin\UpdateRoleRequest $request)

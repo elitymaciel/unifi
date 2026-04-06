@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MikroTik extends Model
+class Router extends Model
 {
-    protected $table = 'mikrotiks';
+    protected $table = 'routers';
 
     protected $fillable = [
         'name',

@@ -21,8 +21,8 @@
                 <a href="{{ route('admin.users.index') }}" class="px-6 py-3 rounded-2xl font-bold text-sm transition-all {{ request()->routeIs('admin.users.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-white text-gray-500 hover:bg-gray-100 border border-gray-100' }}">
                     Usuários
                 </a>
-                <a href="{{ route('admin.mikrotiks.index') }}" class="px-6 py-3 rounded-2xl font-bold text-sm transition-all {{ request()->routeIs('admin.mikrotiks.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-white text-gray-500 hover:bg-gray-100 border border-gray-100' }}">
-                    MikroTiks
+                <a href="{{ route('admin.routers.index') }}" class="px-6 py-3 rounded-2xl font-bold text-sm transition-all {{ request()->routeIs('admin.routers.index') ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'bg-white text-gray-500 hover:bg-gray-100 border border-gray-100' }}">
+                    Roteadores
                 </a>
             </div>
             
@@ -85,6 +85,7 @@
                                 <th class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Usuário</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Acesso</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Permissões de Site</th>
+                                <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Permissões de WiFi/Router</th>
                                 <th class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Ações</th>
                             </tr>
                         </thead>
@@ -114,21 +115,76 @@
                                     </td>
                                     <td class="px-6 py-4">
                                         @if($user->isAdmin())
-                                            <div class="text-center text-xs font-bold text-gray-400 italic">Administradores possuem acesso total a todos os sites</div>
+                                            <div class="text-center text-xs font-bold text-gray-400 italic">Administradores possuem acesso total</div>
                                         @else
-                                            <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                            <div class="space-y-4">
                                                 @foreach($allSites as $site)
                                                     @php
                                                         $hasAccess = $user->sitePermissions->contains('site_name', $site->name);
+                                                        $siteWlans = $allWlansPerSite[$site->name] ?? [];
                                                     @endphp
-                                                    <form action="{{ route('admin.users.sites') }}" method="POST">
+                                                    <div class="bg-white border border-gray-100 rounded-xl p-2 shadow-sm">
+                                                        <form action="{{ route('admin.users.sites') }}" method="POST">
+                                                            @csrf
+                                                            <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                                            <input type="hidden" name="site_name" value="{{ $site->name }}">
+                                                            <button type="submit" class="w-full text-left px-3 py-1.5 rounded-lg text-[10px] font-black border transition-all {{ $hasAccess ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-600' }}">
+                                                                <div class="flex items-center justify-between">
+                                                                    <span>SITE: {{ strtoupper($site->desc) }}</span>
+                                                                    @if($hasAccess)
+                                                                        <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                                                    @endif
+                                                                </div>
+                                                            </button>
+                                                        </form>
+
+                                                        @if($hasAccess && count($siteWlans) > 0)
+                                                            <div class="mt-2 pl-2 border-l-2 border-indigo-100 space-y-1">
+                                                                <p class="text-[9px] font-black text-indigo-400 uppercase tracking-tighter mb-1">Redes Permitidas:</p>
+                                                                @foreach($siteWlans as $wlan)
+                                                                    @php
+                                                                        $hasWifiAccess = $user->wifiPermissions
+                                                                            ->where('site_name', $site->name)
+                                                                            ->where('wlan_id', $wlan->_id)
+                                                                            ->isNotEmpty();
+                                                                    @endphp
+                                                                    <form action="{{ route('admin.users.wifi') }}" method="POST">
+                                                                        @csrf
+                                                                        <input type="hidden" name="user_id" value="{{ $user->id }}">
+                                                                        <input type="hidden" name="site_name" value="{{ $site->name }}">
+                                                                        <input type="hidden" name="wlan_id" value="{{ $wlan->_id }}">
+                                                                        <button type="submit" class="w-full flex items-center justify-between px-2 py-1 rounded bg-slate-50 border border-slate-100 text-[9px] font-bold hover:shadow-sm transition-all {{ $hasWifiAccess ? 'text-indigo-600 border-indigo-200 bg-indigo-50/50' : 'text-gray-400 grayscale' }}">
+                                                                            <span>{{ $wlan->name }}</span>
+                                                                            <div class="h-1.5 w-1.5 rounded-full {{ $hasWifiAccess ? 'bg-indigo-500 shadow-[0_0_5px_rgba(99,102,241,0.5)]' : 'bg-gray-300' }}"></div>
+                                                                        </button>
+                                                                    </form>
+                                                                @endforeach
+                                                            </div>
+                                                        @elseif($hasAccess)
+                                                            <p class="mt-1 text-[8px] text-gray-400 italic text-center">Nenhuma rede WiFi encontrada</p>
+                                                        @endif
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @if($user->isAdmin())
+                                            <div class="text-center text-xs font-bold text-gray-400 italic">Administradores possuem acesso total</div>
+                                        @else
+                                            <div class="grid grid-cols-1 gap-2">
+                                                @foreach($allRouters as $router)
+                                                    @php
+                                                        $hasRouterAccess = $user->routerPermissions->contains('router_id', $router->id);
+                                                    @endphp
+                                                    <form action="{{ route('admin.users.routers') }}" method="POST">
                                                         @csrf
                                                         <input type="hidden" name="user_id" value="{{ $user->id }}">
-                                                        <input type="hidden" name="site_name" value="{{ $site->name }}">
-                                                        <button type="submit" class="w-full text-left px-3 py-1.5 rounded-lg text-[11px] font-bold border transition-all {{ $hasAccess ? 'bg-emerald-50 border-emerald-100 text-emerald-700' : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-600' }}">
+                                                        <input type="hidden" name="router_id" value="{{ $router->id }}">
+                                                        <button type="submit" class="w-full text-left px-3 py-1.5 rounded-lg text-[10px] font-bold border transition-all {{ $hasRouterAccess ? 'bg-orange-50 border-orange-100 text-orange-700' : 'bg-gray-50 border-gray-200 text-gray-400 hover:border-indigo-300 hover:text-indigo-600' }}">
                                                             <div class="flex items-center justify-between">
-                                                                <span>{{ $site->desc }}</span>
-                                                                @if($hasAccess)
+                                                                <span>{{ $router->name }}</span>
+                                                                @if($hasRouterAccess)
                                                                     <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                                                 @endif
                                                             </div>
@@ -349,10 +405,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-        </div>
-    </div>
         </div>
     </div>
 </x-app-layout>

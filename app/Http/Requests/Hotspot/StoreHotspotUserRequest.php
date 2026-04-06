@@ -14,6 +14,7 @@ class StoreHotspotUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'router_id' => 'required|exists:routers,id',
             'name' => 'required|string|max:255',
             'password' => 'required|string|min:4',
             'profile' => 'required|string',

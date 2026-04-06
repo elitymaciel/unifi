@@ -11,13 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mikrotiks', function (Blueprint $table) {
+        Schema::create('router_permissions', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('host');
-            $table->string('username');
-            $table->string('password');
-            $table->integer('port')->default(8728);
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('router_id')->constrained('routers')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mikrotiks');
+        Schema::dropIfExists('mikro_tik_permissions');
     }
 };

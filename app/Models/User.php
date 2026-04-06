@@ -24,7 +24,7 @@ class User extends Authenticatable
         'role',
     ];
 
-    public function isAdmin()
+    public function isAdmin(): bool
     {
         return $this->role === 'admin';
     }
@@ -34,9 +34,32 @@ class User extends Authenticatable
         return $this->hasMany(SitePermission::class);
     }
 
+    public function routerPermissions()
+    {
+        return $this->hasMany(RouterPermission::class);
+    }
+
+    public function wifiPermissions()
+    {
+        return $this->hasMany(WifiPermission::class);
+    }
+
     public function allowedSites()
     {
         return $this->sitePermissions()->pluck('site_name')->toArray();
+    }
+
+    public function allowedRouters()
+    {
+        return $this->routerPermissions()->pluck('router_id')->toArray();
+    }
+
+    public function allowedWlans(string $siteName)
+    {
+        return $this->wifiPermissions()
+            ->where('site_name', $siteName)
+            ->pluck('wlan_id')
+            ->toArray();
     }
 
     /**

@@ -29,15 +29,17 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/users/create', [AdminController::class, 'createUser'])->name('users.create');
     Route::post('/users/role', [AdminController::class, 'updateRole'])->name('users.role');
     Route::post('/users/sites', [AdminController::class, 'toggleSitePermission'])->name('users.sites');
+    Route::post('/users/routers', [AdminController::class, 'toggleRouterPermission'])->name('users.routers');
+    Route::post('/users/wifi', [AdminController::class, 'toggleWifiPermission'])->name('users.wifi');
     Route::delete('/users/{user}', [AdminController::class, 'destroy'])->name('users.destroy');
     Route::put('/users/{user}', [AdminController::class, 'updateUser'])->name('users.update');
 
     Route::get('/hotspot', [\App\Http\Controllers\HotspotController::class, 'index'])->name('hotspot.index');
     Route::post('/hotspot/users', [\App\Http\Controllers\HotspotController::class, 'store'])->name('hotspot.users.store');
 
-    Route::get('/mikrotiks', [\App\Http\Controllers\Admin\MikroTikController::class, 'index'])->name('mikrotiks.index');
-    Route::post('/mikrotiks', [\App\Http\Controllers\Admin\MikroTikController::class, 'store'])->name('mikrotiks.store');
-    Route::delete('/mikrotiks/{mikrotik}', [\App\Http\Controllers\Admin\MikroTikController::class, 'destroy'])->name('mikrotiks.destroy');
+    Route::get('/routers', [\App\Http\Controllers\Admin\RouterController::class, 'index'])->name('routers.index');
+    Route::post('/routers', [\App\Http\Controllers\Admin\RouterController::class, 'store'])->name('routers.store');
+    Route::delete('/routers/{router}', [\App\Http\Controllers\Admin\RouterController::class, 'destroy'])->name('routers.destroy');
 });
 
 Route::middleware('auth')->group(function () {

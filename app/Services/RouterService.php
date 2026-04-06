@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Router;
+
 /**
- * Lightweight MikroTik RouterOS API Client
- * Based on the official MikroTik RouterOS PHP API class.
+ * Lightweight RouterOS API Client
+ * Based on the official RouterOS PHP API class.
  */
-class MikroTikService
+class RouterService
 {
     protected $host;
     protected $user;
@@ -15,18 +17,18 @@ class MikroTikService
     protected $socket;
     protected $connected = false;
 
-    public function __construct(\App\Models\MikroTik $mikrotik = null)
+    public function __construct(Router $router = null)
     {
-        if ($mikrotik) {
-            $this->host = $mikrotik->host;
-            $this->user = $mikrotik->username;
-            $this->pass = $mikrotik->password;
-            $this->port = $mikrotik->port;
+        if ($router) {
+            $this->host = $router->host;
+            $this->user = $router->username;
+            $this->pass = $router->password;
+            $this->port = $router->port;
         } else {
-            $this->host = config('mikrotik.host');
-            $this->user = config('mikrotik.user');
-            $this->pass = config('mikrotik.password');
-            $this->port = config('mikrotik.port', 8728);
+            $this->host = config('router.host');
+            $this->user = config('router.user');
+            $this->pass = config('router.password');
+            $this->port = config('router.port', 8728);
         }
     }
 

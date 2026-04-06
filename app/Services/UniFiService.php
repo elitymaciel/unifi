@@ -68,9 +68,11 @@ class UniFiService
         $wlans = $this->client->list_wlanconf();
 
         if ($user && !$user->isAdmin()) {
-            $restricted = ['VISITANTES', 'COLABORADORES', 'CAN'];
-            $wlans = array_values(array_filter($wlans, function($wlan) use ($restricted) {
-                return !in_array(strtoupper($wlan->name), $restricted);
+            $siteId = session('unifi_site_id', config('unifi.site_id'));
+            $allowed = $user->allowedWlans($siteId);
+            
+            $wlans = array_values(array_filter($wlans, function($wlan) use ($allowed) {
+                return in_array($wlan->_id, $allowed);
             }));
         }
 
@@ -99,6 +101,27 @@ class UniFiService
     {
         $this->login();
         return $this->client->list_users();
+    }
+
+    public function listAllWlansPerSite()
+    {
+        $this->login();
+        $sites = $this->client->list_sites();
+        $wlansPerSite = [];
+
+        foreach ($sites as $site) {
+            if (in_array($site->name, $this->blockedSites)) continue;
+            
+            $this->client->set_site($site->name);
+            $wlans = $this->client->list_wlanconf();
+            $wlansPerSite[$site->name] = $wlans;
+        }
+
+        // Restore original site
+        $originalSite = session('unifi_site_id', config('unifi.site_id'));
+        $this->client->set_site($originalSite);
+
+        return $wlansPerSite;
     }
 
     public function getGlobalStats($user = null)

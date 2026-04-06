@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <h2 class="font-bold text-2xl text-gray-800 leading-tight">
-                Gestão de <span class="text-indigo-600 font-black">Visitantes MikroTik</span>
+                Gestão de <span class="text-indigo-600 font-black">Visitantes WiFi</span>
             </h2>
         </div>
     </x-slot>
@@ -13,26 +13,26 @@
             <div class="flex justify-between items-center mb-8">
                 <div>
                     <h3 class="text-xl font-bold text-gray-800">Usuários Visitantes</h3>
-                    @if(isset($activeMikroTik))
-                        <p class="text-sm text-indigo-600 font-bold">Roteador Ativo: {{ $activeMikroTik->name }} ({{ $activeMikroTik->host }})</p>
+                    @if(isset($activeRouter))
+                        <p class="text-sm text-indigo-600 font-bold">Roteador Ativo: {{ $activeRouter->name }} ({{ $activeRouter->host }})</p>
                     @endif
                 </div>
 
                 <div class="flex space-x-4">
                     <!-- Router Selector -->
-                    @if($mikrotiks->count() > 1)
+                    @if($routers->count() > 1)
                         <form action="{{ route('hotspot.index') }}" method="GET" class="flex items-center">
-                            <select name="mikrotik_id" onchange="this.form.submit()" class="rounded-xl border-gray-200 text-sm font-bold bg-white focus:ring-indigo-500 pr-10">
-                                @foreach($mikrotiks as $m)
-                                    <option value="{{ $m->id }}" {{ $activeMikroTik->id == $m->id ? 'selected' : '' }}>
-                                        {{ $m->name }}
+                            <select name="router_id" onchange="this.form.submit()" class="rounded-xl border-gray-200 text-sm font-bold bg-white focus:ring-indigo-500 pr-10">
+                                @foreach($routers as $r)
+                                    <option value="{{ $r->id }}" {{ $activeRouter->id == $r->id ? 'selected' : '' }}>
+                                        {{ $r->name }}
                                     </option>
                                 @endforeach
                             </select>
                         </form>
                     @endif
 
-                    @if(isset($activeMikroTik))
+                    @if(isset($activeRouter))
                         <button @click="showCreateModal = true" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-xl font-bold text-sm text-white uppercase tracking-widest hover:bg-indigo-700 transition shadow-sm">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                             Novo Usuário
@@ -105,7 +105,7 @@
             @endif
 
             <!-- Create User Modal -->
-            @if(isset($activeMikroTik))
+            @if(isset($activeRouter))
             <div x-show="showCreateModal" 
                  class="fixed inset-0 z-50 overflow-y-auto" 
                  style="display: none;"
@@ -133,14 +133,14 @@
                                     </svg>
                                 </div>
                                 <h3 class="text-2xl font-black text-white tracking-tight">Novo Visitante</h3>
-                                <p class="text-indigo-100 text-sm font-medium mt-1">Crie credenciais para o roteador <span class="underline">{{ $activeMikroTik->name }}</span></p>
+                                <p class="text-indigo-100 text-sm font-medium mt-1">Crie credenciais para o roteador <span class="underline">{{ $activeRouter->name }}</span></p>
                             </div>
                         </div>
 
                         <div class="px-8 py-8">
                             <form id="create-hotspot-user-form" action="{{ route('hotspot.users.store') }}" method="POST" class="space-y-6">
                                 @csrf
-                                <input type="hidden" name="mikrotik_id" value="{{ $activeMikroTik->id }}">
+                                <input type="hidden" name="router_id" value="{{ $activeRouter->id }}">
                                 <div>
                                     <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2">Usuário / Login</label>
                                     <input type="text" name="name" required class="w-full bg-slate-50 border-gray-200 rounded-2xl py-3 px-4 shadow-sm focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 transition-all font-bold">

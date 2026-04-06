@@ -4,7 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMikroTikRequest extends FormRequest
+class StoreRouterRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -25,7 +25,7 @@ class StoreMikroTikRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'O nome do MikroTik é obrigatório.',
+            'name.required' => 'O nome do Roteador é obrigatório.',
             'host.required' => 'O endereço IP/Host é obrigatório.',
             'username.required' => 'O usuário é obrigatório.',
             'password.required' => 'A senha é obrigatória.',

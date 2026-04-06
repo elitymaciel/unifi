@@ -2,60 +2,76 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\MikroTikService;
+use App\Models\Router;
+use App\Services\RouterService;
 use App\Http\Requests\Hotspot\StoreHotspotUserRequest;
 use Illuminate\Http\Request;
 
 class HotspotController extends Controller
 {
-    protected $mikrotik;
+    protected $router;
 
-    public function __construct(MikroTikService $mikrotik)
+    public function __construct(RouterService $router)
     {
-        $this->mikrotik = $mikrotik;
+        $this->router = $router;
     }
 
     public function index(Request $request)
     {
-        $mikrotiks = \App\Models\MikroTik::all();
+        $user = auth()->user();
         
-        if ($mikrotiks->isEmpty()) {
-            return view('hotspot.index', ['users' => collect([]), 'mikrotiks' => $mikrotiks])
-                ->with('error', 'Nenhum MikroTik encontrado no sistema. Por favor, cadastre um roteador na área de Administração.');
+        if ($user->isAdmin()) {
+            $routers = Router::all();
+        } else {
+            $allowedIds = $user->allowedRouters();
+            $routers = Router::whereIn('id', $allowedIds)->get();
+        }
+        
+        if ($routers->isEmpty()) {
+            return view('hotspot.index', ['users' => collect([]), 'routers' => $routers])
+                ->with('error', 'Nenhum roteador encontrado ou você não possui permissão para acessar nenhum equipamento.');
         }
 
-        $selectedId = $request->get('mikrotik_id', session('mikrotik_id', $mikrotiks->first()->id));
-        session(['mikrotik_id' => $selectedId]);
+        $selectedId = $request->get('router_id', session('router_id', $routers->first()->id));
         
-        $activeMikroTik = $mikrotiks->firstWhere('id', $selectedId) ?? $mikrotiks->first();
+        // Ensure the selected router is allowed
+        if (!$routers->contains('id', $selectedId)) {
+            $selectedId = $routers->first()->id;
+        }
+        
+        session(['router_id' => $selectedId]);
+        
+        $activeRouter = $routers->firstWhere('id', $selectedId);
 
         try {
-            $service = new MikroTikService($activeMikroTik);
+            $service = new RouterService($activeRouter);
             $usersRaw = $service->listHotspotUsers();
             
             $users = collect($usersRaw)->map(function($item) {
                 $userData = [];
                 foreach ($item as $pair) {
-                    foreach ($pair as $key => $value) {
-                        $userData[$key] = $value;
+                    if (is_array($pair)) {
+                        foreach ($pair as $key => $value) {
+                            $userData[$key] = $value;
+                        }
                     }
                 }
                 return (object) $userData;
             });
 
-            return view('hotspot.index', compact('users', 'mikrotiks', 'activeMikroTik'));
+            return view('hotspot.index', compact('users', 'routers', 'activeRouter'));
         } catch (\Exception $e) {
-            return view('hotspot.index', compact('mikrotiks', 'activeMikroTik'))
+            return view('hotspot.index', compact('routers', 'activeRouter'))
                 ->with('users', collect([]))
-                ->with('error', "Erro ao conectar ao MikroTik ({$activeMikroTik->name}): " . $e->getMessage());
+                ->with('error', "Erro ao conectar ao roteador ({$activeRouter->name}): " . $e->getMessage());
         }
     }
 
     public function store(StoreHotspotUserRequest $request)
     {
         try {
-            $mikrotik = \App\Models\MikroTik::findOrFail($request->mikrotik_id);
-            $service = new MikroTikService($mikrotik);
+            $router = Router::findOrFail($request->router_id);
+            $service = new RouterService($router);
             
             $service->createHotspotUser(
                 $request->name,
