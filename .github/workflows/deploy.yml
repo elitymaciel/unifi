@@ -56,9 +56,10 @@ jobs:
           script: |
             cd ~/laravel
             
-            git clean -fd
-            git reset --hard
-            git pull origin main
+            # Forçar descarte de QUALQUER alteração manual ou arquivo extra no servidor
+            sudo git clean -fdx --exclude=.env || true
+            sudo git reset --hard
+            sudo git pull origin main
 
             # Criar o .env de produção
             echo '${{ secrets.ENV_FILE }}' > ~/laravel/.env
