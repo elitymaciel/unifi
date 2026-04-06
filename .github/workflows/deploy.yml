@@ -30,7 +30,10 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           port: 22
           script: |
+            mkdir -p ~/laravel
             sudo chown -R $USER:$USER ~/laravel || true
+            sudo chmod -R 775 ~/laravel || true
+            rm -rf ~/laravel/public/build || true
 
       - name: 🚀 Deploy to Server via Rsync
         uses: easingthemes/ssh-deploy@main
