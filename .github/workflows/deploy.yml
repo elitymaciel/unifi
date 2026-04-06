@@ -40,7 +40,7 @@ jobs:
         uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
-          ARGS: "-avz --delete --exclude='.git/' --exclude='.env' --exclude='/node_modules/' --exclude='/storage/' --exclude='/public/storage/'"
+          ARGS: "-avz --delete --exclude='.git/' --exclude='.env' --exclude='/node_modules/' --exclude='/storage/' --exclude='/public/storage/' --exclude='/public/build/'"
           SOURCE: "./"
           REMOTE_HOST: ${{ secrets.SSH_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USER }}
