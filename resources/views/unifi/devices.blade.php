@@ -18,7 +18,25 @@
                         </div>
                     @endif
 
-                    <h3 class="text-lg font-bold mb-4">Clientes Conectados</h3>
+                    <div class="flex justify-between items-center mb-6 bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <h3 class="text-lg font-bold text-gray-800">Clientes Conectados</h3>
+                        
+                        <form action="{{ route('unifi.devices') }}" method="GET" class="flex items-center space-x-2">
+                            <label for="network" class="text-sm font-medium text-gray-700">Filtrar por Rede:</label>
+                            <select name="network" id="network" onchange="this.form.submit()" class="text-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="">Todos os Dispositivos</option>
+                                <option value="LAN" {{ request('network') == 'LAN' ? 'selected' : '' }}>Rede Local (LAN)</option>
+                                @foreach($wlans as $wlan)
+                                    <option value="{{ $wlan->name }}" {{ request('network') == $wlan->name ? 'selected' : '' }}>
+                                        WiFi: {{ $wlan->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @if(request('network'))
+                                <a href="{{ route('unifi.devices') }}" class="text-xs text-red-600 hover:text-red-800 font-medium">Limpar</a>
+                            @endif
+                        </form>
+                    </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead>

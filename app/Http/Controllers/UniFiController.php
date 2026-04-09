@@ -65,11 +65,23 @@ class UniFiController extends Controller
         return back()->with('success', 'Nome da rede WiFi atualizado com sucesso.');
     }
 
-    public function indexDevices()
+    public function indexDevices(Request $request)
     {
         $clients = $this->unifi->getClients();
         $wlans = $this->unifi->getWlans();
-        return view('unifi.devices', compact('clients', 'wlans'));
+        
+        $currentNetwork = $request->query('network');
+        
+        if ($currentNetwork) {
+            $clients = array_filter($clients, function($client) use ($currentNetwork) {
+                if ($currentNetwork === 'LAN') {
+                    return isset($client->is_wired) && $client->is_wired;
+                }
+                return isset($client->essid) && $client->essid === $currentNetwork;
+            });
+        }
+
+        return view('unifi.devices', compact('clients', 'wlans', 'currentNetwork'));
     }
 
     public function addMacFilter(\App\Http\Requests\UniFi\MacFilterRequest $request)
